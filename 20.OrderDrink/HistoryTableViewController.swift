@@ -16,7 +16,7 @@ class HistoryTableViewController: UITableViewController {
         refreshView.color = UIColor.gray
         tableView.backgroundView = refreshView
         refreshView.startAnimating()
-        var item = [GetHistoryOrder]()
+        var getOrderDrinks = [GetHistoryOrder]()
         
         if let urlStr = "https://sheetdb.io/api/v1/i3jrq2akol5d8".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed), let url = URL(string: urlStr) {
             let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
@@ -31,10 +31,10 @@ class HistoryTableViewController: UITableViewController {
                             let ice = i.ice
                             let time = i.time
                             let aOrderDrink = GetHistoryOrder(drinkName: drinkName, orderName: orderName, price: price, suger: suger, ice: ice, time: time)
-                            item.append(aOrderDrink)
+                            getOrderDrinks.append(aOrderDrink)
                         }
-                        if item.count != 0{
-                            completion(item)
+                        if getOrderDrinks.count != 0{
+                            completion(getOrderDrinks)
                             DispatchQueue.main.async {
                                 self.refreshView.stopAnimating()
                             }
