@@ -10,16 +10,14 @@ import UIKit
 
 class HistoryTableViewController: UITableViewController {
     var historyOrder = [GetHistoryOrder]()
-
     let refreshView = UIActivityIndicatorView.init(style: .whiteLarge)
-
     
     func getOrder(completion: @escaping ([GetHistoryOrder]?) -> Void){
         refreshView.color = UIColor.gray
         tableView.backgroundView = refreshView
         refreshView.startAnimating()
-        
         var item = [GetHistoryOrder]()
+        
         if let urlStr = "https://sheetdb.io/api/v1/i3jrq2akol5d8".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed), let url = URL(string: urlStr) {
             let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
                 if let data = data {
@@ -59,15 +57,6 @@ class HistoryTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        getOrder { (getOrderDrinks) in
-            if let getOrderDrinks = getOrderDrinks {
-                DispatchQueue.main.async {
-                    self.historyOrder = getOrderDrinks
-                    self.tableView.reloadData()
-                }
-            }
-        }
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 

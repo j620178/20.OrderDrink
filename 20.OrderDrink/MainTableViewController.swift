@@ -29,15 +29,18 @@ class MainTableViewController: UITableViewController, DetailTableViewControllerD
     }
     
     func orderDrinkUpdate(orderDrink: OrderDrink) {
-        orderDrinks.append(orderDrink)
-        OrderDrink.saveToFile(orderDrinks: orderDrinks)
-        updateBadge(orderDrinks: orderDrinks)
+        if let tempOrderDrinks = OrderDrink.readOrderDrinkFile() {
+            orderDrinks = tempOrderDrinks
+            orderDrinks.append(orderDrink)
+            updateBadge(number: orderDrinks.count)
+            OrderDrink.saveToFile(orderDrinks: orderDrinks)
+        }
     }
     
-    func updateBadge(orderDrinks:[OrderDrink]) {
+    func updateBadge(number:Int) {
         if let tabItems = tabBarController?.tabBar.items {
             let tabItem = tabItems[1]
-            tabItem.badgeValue = String(orderDrinks.count)
+            tabItem.badgeValue = String(number)
         }
     }
     
@@ -47,19 +50,18 @@ class MainTableViewController: UITableViewController, DetailTableViewControllerD
         if let readDrinks = readDrinkFile(fileName: "迷克夏") {
             drinks = readDrinks
         }
-
-        if let orderDrinks = OrderDrink.readOrderDrinkFile(){
-            self.orderDrinks = orderDrinks
-            updateBadge(orderDrinks: orderDrinks)
-        }
-        
-        
-        
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        if let orderDrinks = OrderDrink.readOrderDrinkFile(){
+            self.orderDrinks = orderDrinks
+            updateBadge(number: orderDrinks.count)
+        }
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -67,7 +69,6 @@ class MainTableViewController: UITableViewController, DetailTableViewControllerD
         return drinks.count
     }
 
-    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "drinkCell", for: indexPath) as! DrinkTableViewCell
         cell.drinkName.text = drinks[indexPath.row].name
